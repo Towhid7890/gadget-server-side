@@ -19,6 +19,7 @@ async function run() {
   try {
     const laptopCollection = client.db("categories").collection("category");
     const bookingCollection = client.db("categories").collection("bookings");
+    const userCollection = client.db("categories").collection("users");
 
     app.get("/category/:id", async (req, res) => {
       const id = req.params.id;
@@ -30,6 +31,12 @@ async function run() {
     app.post("/bookings", async (req, res) => {
       const booking = req.body;
       const result = await bookingCollection.insertOne(booking);
+      res.send(result);
+    });
+    // post for users method
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const result = await userCollection.insertOne(user);
       res.send(result);
     });
   } finally {
