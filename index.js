@@ -42,9 +42,8 @@ async function run() {
     });
     // get method for users
     app.get("/users", async (req, res) => {
-      const role = req.query.role;
-      console.log(role);
-      const query = { role: role };
+      const email = req.query.email;
+      const query = { email: email };
       const users = await userCollection.find(query).toArray();
       res.send(users);
     });
