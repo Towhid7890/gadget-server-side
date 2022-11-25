@@ -40,6 +40,22 @@ async function run() {
       const bookings = await bookingCollection.find(query).toArray();
       res.send(bookings);
     });
+    // get method for users
+    app.get("/users", async (req, res) => {
+      const role = req.query.role;
+      console.log(role);
+      const query = { role: role };
+      const users = await userCollection.find(query).toArray();
+      res.send(users);
+    });
+
+    app.get("/users/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await userCollection.findOne(query);
+      res.send({ isAdmin: user?.role === "admin" });
+    });
+
     // post for users method
     app.post("/users", async (req, res) => {
       const user = req.body;
