@@ -21,9 +21,9 @@ async function run() {
     const bookingCollection = client.db("categories").collection("bookings");
     const userCollection = client.db("categories").collection("users");
 
-    app.get("/category/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { category_Id: id };
+    app.get("/category", async (req, res) => {
+      const category = req.query.category;
+      const query = { category: category };
       const result = await laptopCollection.find(query).toArray();
       res.send(result);
     });
@@ -53,6 +53,13 @@ async function run() {
       const query = { email };
       const user = await userCollection.findOne(query);
       res.send({ isAdmin: user?.role === "admin" });
+    });
+
+    // post for add product
+    app.post("/addProduct", async (req, res) => {
+      const review = req.body;
+      const result = await laptopCollection.insertOne(review);
+      res.send(result);
     });
 
     // post for users method
