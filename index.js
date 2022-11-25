@@ -33,6 +33,13 @@ async function run() {
       const result = await bookingCollection.insertOne(booking);
       res.send(result);
     });
+    // get method for orders
+    app.get("/myOrders", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const bookings = await bookingCollection.find(query).toArray();
+      res.send(bookings);
+    });
     // post for users method
     app.post("/users", async (req, res) => {
       const user = req.body;
