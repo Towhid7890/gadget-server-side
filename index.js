@@ -33,6 +33,13 @@ async function run() {
       const result = await bookingCollection.insertOne(booking);
       res.send(result);
     });
+    // get method for seller products
+    app.get("/myProducts", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const products = await laptopCollection.find(query).toArray();
+      res.send(products);
+    });
     // get method for orders
     app.get("/myOrders", async (req, res) => {
       const email = req.query.email;
