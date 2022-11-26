@@ -98,7 +98,7 @@ async function run() {
       res.send(users);
     });
     // get method for users
-    app.get("/buyers", verifyJWT, async (req, res) => {
+    app.get("/buyers", async (req, res) => {
       const role = req.query.role;
       const query = { role: role };
       const users = await userCollection.find(query).toArray();
@@ -116,13 +116,6 @@ async function run() {
         return res.send({ accessToken: token });
       }
       res.status(403).send({ accessToken: "" });
-    });
-
-    app.get("/users/admin/:email", async (req, res) => {
-      const email = req.params.email;
-      const query = { email };
-      const user = await userCollection.findOne(query);
-      res.send({ isAdmin: user?.role === "admin" });
     });
 
     // post for add product
