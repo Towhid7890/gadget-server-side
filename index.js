@@ -1,5 +1,5 @@
 const express = require("express");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const cors = require("cors");
 const app = express();
 app.use(cors());
@@ -66,6 +66,13 @@ async function run() {
     app.post("/addProduct", async (req, res) => {
       const review = req.body;
       const result = await laptopCollection.insertOne(review);
+      res.send(result);
+    });
+
+    app.delete("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await laptopCollection.deleteOne(filter);
       res.send(result);
     });
 
