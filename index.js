@@ -54,7 +54,7 @@ async function run() {
       res.send(result);
     });
     // get method for advertise
-    app.get("/advertise", async (req, res) => {
+    app.get("/advertise", verifyJWT, async (req, res) => {
       const query = {};
       const products = await advertiseCollection.find(query).toArray();
       res.send(products);
@@ -79,6 +79,17 @@ async function run() {
       const bookings = await bookingCollection.find(query).toArray();
       res.send(bookings);
     });
+    // verifyAdmin
+    const verifyAdmin = async (req, res, next) => {
+      const decodedEmail = req.decoded.email;
+      const query = { email: decodedEmail };
+      const user = await usersCollection.findOne(query);
+
+      if (user?.role !== "admin") {
+        return res.status(403).send({ message: "forbidden access" });
+      }
+      next();
+    };
     // get method for users
     app.get("/users", async (req, res) => {
       const email = req.query.email;
@@ -87,7 +98,7 @@ async function run() {
       res.send(users);
     });
     // get method for users
-    app.get("/buyers", async (req, res) => {
+    app.get("/buyers", verifyJWT, async (req, res) => {
       const role = req.query.role;
       const query = { role: role };
       const users = await userCollection.find(query).toArray();
