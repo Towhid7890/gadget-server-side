@@ -54,6 +54,13 @@ async function run() {
       const users = await userCollection.find(query).toArray();
       res.send(users);
     });
+    // get method for users
+    app.get("/buyers", async (req, res) => {
+      const role = req.query.role;
+      const query = { role: role };
+      const users = await userCollection.find(query).toArray();
+      res.send(users);
+    });
 
     app.get("/users/admin/:email", async (req, res) => {
       const email = req.params.email;
@@ -73,6 +80,12 @@ async function run() {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
       const result = await laptopCollection.deleteOne(filter);
+      res.send(result);
+    });
+    app.delete("/user/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await userCollection.deleteOne(filter);
       res.send(result);
     });
 
