@@ -16,23 +16,23 @@ const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
 });
 
-function verifyJWT(req, res, next) {
-  const authHeader = req.headers.authorization;
-  console.log(authHeader);
-  if (!authHeader) {
-    return res.status(401).send("unauthorized access");
-  }
+// function verifyJWT(req, res, next) {
+//   const authHeader = req.headers.authorization;
+//   console.log(authHeader);
+//   if (!authHeader) {
+//     return res.status(401).send("unauthorized access");
+//   }
 
-  const token = authHeader.split(" ")[1];
+//   const token = authHeader.split(" ")[1];
 
-  jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
-    if (err) {
-      return res.status(403).send({ message: "forbidden access" });
-    }
-    req.decoded = decoded;
-    next();
-  });
-}
+//   jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
+//     if (err) {
+//       return res.status(403).send({ message: "forbidden access" });
+//     }
+//     req.decoded = decoded;
+//     next();
+//   });
+// }
 
 async function run() {
   try {
@@ -54,7 +54,7 @@ async function run() {
       res.send(result);
     });
     // get method for advertise
-    app.get("/advertise", verifyJWT, async (req, res) => {
+    app.get("/advertise", async (req, res) => {
       const query = {};
       const products = await advertiseCollection.find(query).toArray();
       res.send(products);
@@ -73,7 +73,7 @@ async function run() {
       res.send(products);
     });
     // get method for orders
-    app.get("/myOrders", verifyJWT, async (req, res) => {
+    app.get("/myOrders", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const bookings = await bookingCollection.find(query).toArray();
