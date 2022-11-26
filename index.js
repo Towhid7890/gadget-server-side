@@ -53,6 +53,12 @@ async function run() {
       const result = await bookingCollection.insertOne(booking);
       res.send(result);
     });
+    // get method for advertise
+    app.get("/advertise", async (req, res) => {
+      const query = {};
+      const products = await advertiseCollection.find(query).toArray();
+      res.send(products);
+    });
     // post method for advertise
     app.post("/advertise", async (req, res) => {
       const booking = req.body;
