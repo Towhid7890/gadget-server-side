@@ -40,6 +40,7 @@ async function run() {
     const bookingCollection = client.db("categories").collection("bookings");
     const userCollection = client.db("categories").collection("users");
     const advertiseCollection = client.db("categories").collection("advertise");
+    const reportCollection = client.db("categories").collection("report");
 
     app.get("/category", async (req, res) => {
       const category = req.query.category;
@@ -47,6 +48,19 @@ async function run() {
       const result = await laptopCollection.find(query).toArray();
       res.send(result);
     });
+    // post method for report item
+    app.post("/report", async (req, res) => {
+      const report = req.body;
+      const result = await reportCollection.insertOne(report);
+      res.send(result);
+    });
+    // get method for advertise
+    app.get("/report", async (req, res) => {
+      const query = {};
+      const products = await reportCollection.find(query).toArray();
+      res.send(products);
+    });
+
     // post method for bookings
     app.post("/bookings", async (req, res) => {
       const booking = req.body;
@@ -73,7 +87,7 @@ async function run() {
       res.send(products);
     });
     // get method for orders
-    app.get("/myOrders", async (req, res) => {
+    app.get("/myOrders", verifyJWT, async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const bookings = await bookingCollection.find(query).toArray();
@@ -114,7 +128,12 @@ async function run() {
       const result = await laptopCollection.insertOne(review);
       res.send(result);
     });
-
+    app.get("/users/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await userCollection.findOne(query);
+      res.send({ isAdmin: user?.role === "admin" });
+    });
     app.delete("/product/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
