@@ -16,23 +16,23 @@ const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
 });
 
-// function verifyJWT(req, res, next) {
-//   const authHeader = req.headers.authorization;
-//   console.log(authHeader);
-//   if (!authHeader) {
-//     return res.status(401).send("unauthorized access");
-//   }
+function verifyJWT(req, res, next) {
+  const authHeader = req.headers.authorization;
+  console.log(authHeader);
+  if (!authHeader) {
+    return res.status(401).send("unauthorized access");
+  }
 
-//   const token = authHeader.split(" ")[1];
+  const token = authHeader.split(" ")[1];
 
-//   jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
-//     if (err) {
-//       return res.status(403).send({ message: "forbidden access" });
-//     }
-//     req.decoded = decoded;
-//     next();
-//   });
-// }
+  jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
+    if (err) {
+      return res.status(403).send({ message: "forbidden access" });
+    }
+    req.decoded = decoded;
+    next();
+  });
+}
 
 async function run() {
   try {
@@ -73,23 +73,13 @@ async function run() {
       res.send(products);
     });
     // get method for orders
-    app.get("/myOrders", async (req, res) => {
+    app.get("/myOrders", verifyJWT, async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const bookings = await bookingCollection.find(query).toArray();
       res.send(bookings);
     });
-    // verifyAdmin
-    const verifyAdmin = async (req, res, next) => {
-      const decodedEmail = req.decoded.email;
-      const query = { email: decodedEmail };
-      const user = await usersCollection.findOne(query);
 
-      if (user?.role !== "admin") {
-        return res.status(403).send({ message: "forbidden access" });
-      }
-      next();
-    };
     // get method for users
     app.get("/users", async (req, res) => {
       const email = req.query.email;
