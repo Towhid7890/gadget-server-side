@@ -57,8 +57,8 @@ async function run() {
     // get method for advertise
     app.get("/report", async (req, res) => {
       const query = {};
-      const products = await reportCollection.find(query).toArray();
-      res.send(products);
+      const product = await reportCollection.find(query).toArray();
+      res.send(product);
     });
 
     // post method for bookings
@@ -87,7 +87,7 @@ async function run() {
       res.send(products);
     });
     // get method for orders
-    app.get("/myOrders", verifyJWT, async (req, res) => {
+    app.get("/myOrders", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const bookings = await bookingCollection.find(query).toArray();
